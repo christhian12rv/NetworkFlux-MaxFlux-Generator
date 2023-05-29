@@ -69,7 +69,7 @@ export const NetworkFlux: React.FunctionComponent = () => {
 			if (stepStop <= 0) {
 				setVerifyMaxFluxStarted(false);
 
-				if (stepStop > 1)
+				if (stepStop > -1)
 					setStepStop((st) => st - 1);
 
 				onGenerateNetworkFluxBasedOnJsonButtonClick();
