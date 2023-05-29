@@ -1,0 +1,10 @@
+.main-button {
+	background-color: #80deea;
+	border: none !important;
+	outline: none !important;
+	transition: .25s all;
+}
+
+.main-button:hover {
+	background-color: #00bcd4;
+}
