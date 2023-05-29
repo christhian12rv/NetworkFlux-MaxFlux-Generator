@@ -126,7 +126,7 @@ export const NetworkFlux: React.FunctionComponent = () => {
 				</form>
 			</div>
 
-			<div style={{ width: '100vw', height: '100vh', padding: '1em', }}>
+			<div style={{ width: 'calc(100vw - 3.2em)', height: '100vh', padding: '1em', }}>
 				<ReactFlow
 					nodes={nodes}
 					edges={edges}

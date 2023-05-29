@@ -1,3 +1,4 @@
+import './TextArea.css';
 import React from 'react';
 
 type Props = {
@@ -11,6 +12,7 @@ type Props = {
 export const TextArea: React.FunctionComponent<Props> = ({ placeholder, value, onChange, style, rows, }) => {
 	return (
 		<textarea
+			className='main-textarea'
 			value={value}
 			placeholder={placeholder}
 			onChange={onChange}
