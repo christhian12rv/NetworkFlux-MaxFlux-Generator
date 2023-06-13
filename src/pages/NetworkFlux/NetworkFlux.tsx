@@ -10,6 +10,7 @@ import { verifyMaxFlux } from '../../utils/verifyMaxFlux';
 import PathFindingEdge from '@tisoap/react-flow-smart-edge';
 import { CustomEdge } from './CustomEdge';
 import { TextUpdaterNode } from './TextUpdaterNode';
+import { Input } from '../../components/Input';
 
 const nodeTypes = { textUpdater: TextUpdaterNode, };
 
@@ -30,6 +31,8 @@ export const NetworkFlux: React.FunctionComponent = () => {
 	const [verifyMaxFluxStarted, setVerifyMaxFluxStarted] = useState(false);
 
 	const [jsonData, setJsonData] = useState('');
+	const [maxFlowInitialFlux, setMaxFlowInitialFlux] = useState(0);
+	const [maxFlowExpected, setMaxFlowExpected] = useState('');
 	const { setViewport } = useReactFlow();
 
 	const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
@@ -48,9 +51,13 @@ export const NetworkFlux: React.FunctionComponent = () => {
 			return alert('Json inválido');
 		}
 
+		if (!maxFlowExpected.trim())
+			return alert('Fluxo máximo esperado inválido');
+
 		const data = JSON.parse(jsonData);
 
-		const {nodes: generatedNodes, edges: generatedEdges, graphWidth} = generateNodesAndEdges(data);
+		const {nodes: generatedNodes, edges: generatedEdges, graphWidth, maxFlow} = generateNodesAndEdges(data, maxFlowExpected, null);
+		setMaxFlowInitialFlux(maxFlow);
 		setNodes(generatedNodes);
 		setEdges(generatedEdges);
 		handleTransform(graphWidth);
@@ -86,7 +93,9 @@ export const NetworkFlux: React.FunctionComponent = () => {
 
 		const { maxFlow, rGraph, finished } = verifyMaxFlux(jsonData, stepStop);
 
-		const {nodes: generatedNodes, edges: generatedEdges, graphWidth} = generateNodesAndEdges(rGraph);
+		console.log(maxFlow, maxFlowExpected);
+
+		const {nodes: generatedNodes, edges: generatedEdges, graphWidth} = generateNodesAndEdges(rGraph, maxFlowExpected, maxFlowInitialFlux);
 		setNodes(generatedNodes);
 		setEdges(generatedEdges);
 
@@ -104,6 +113,10 @@ export const NetworkFlux: React.FunctionComponent = () => {
 		setJsonData(e.target.value);
 	};
 
+	const onMaxFlowExpectedChange = (e) => {
+    setMaxFlowExpected(e.target.value);
+  };
+
 	return (
 		<>
 			<div className='form-generator-box items-center'>
@@ -115,6 +128,8 @@ export const NetworkFlux: React.FunctionComponent = () => {
 						style={{ width: '500px' }}
 						rows={10}
 					/>
+
+					<Input type='number' value={maxFlowExpected} onChange={onMaxFlowExpectedChange} placeholder='Fluxo Máximo esperado'/>
 
 					<Button onClick={onGenerateNetworkFluxBasedOnJsonButtonClick}>Gerar Rede de Fluxo</Button>
 					{!verifyMaxFluxStarted ? <Button onClick={verifyMaxFluxClick}>Verificar Fluxo Máximo</Button>
@@ -136,7 +151,6 @@ export const NetworkFlux: React.FunctionComponent = () => {
 					fitView
 					nodeTypes={nodeTypes}
 					edgeTypes={edgeTypes}
-					// snapToGrid={true}
 				/>
 			</div>
 		</>

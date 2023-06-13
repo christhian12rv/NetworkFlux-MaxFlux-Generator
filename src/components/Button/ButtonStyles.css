@@ -3,6 +3,7 @@
 	border: none !important;
 	outline: none !important;
 	transition: .25s all;
+	border-radius: 3px;
 }
 
 .main-button:hover {

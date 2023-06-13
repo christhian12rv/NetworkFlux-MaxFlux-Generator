@@ -1,18 +1,26 @@
 import { Node, Edge, MarkerType, Position, } from 'reactflow';
+import { verifyMaxFlux } from './verifyMaxFlux';
 
 type ReturnType = {
 	nodes: Node<any, string>[],
 	edges: Edge<any>[],
 	graphWidth: number,
+	maxFlow: number,
 }
 
-export default function generateNodesAndEdges(data): ReturnType {
+export default function generateNodesAndEdges(data, maxFlowExpected, maxFlowInitialFlux?): ReturnType {
 	const nodes: Node<any, string>[] = [];
 	const edges: Edge<any>[] = [];
 
 	let countOf2 = 0;
 	let nodeHorizontalSteps = 0;
 	let graphWidth = 0;
+
+
+
+	const verifyMaxFluxResponse = verifyMaxFlux(data, null);
+
+	const maxFlow = maxFlowInitialFlux ? maxFlowInitialFlux : verifyMaxFluxResponse.maxFlow;
 
 	data.forEach((node, nodeIndex) => {
 		nodes.push({
@@ -43,6 +51,8 @@ export default function generateNodesAndEdges(data): ReturnType {
 						sourceNode: n.sourceNode,
 						targetNode: nodeIndex
 					})),
+					maxFlow,
+					maxFlowExpected,
 				},
 				type: 'textUpdater',
 				sourcePosition: Position.Right,
@@ -85,5 +95,6 @@ export default function generateNodesAndEdges(data): ReturnType {
 	})
 
 	graphWidth -= 250;
-	return { nodes, edges, graphWidth };
+
+	return { nodes, edges, graphWidth, maxFlow };
 }
